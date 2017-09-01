@@ -22,9 +22,16 @@ import javafx.stage.Stage;
  *
  */
 public class FroggerApp extends Application {
+	private static final double CANVAS_WIDTH = 800;
+	private static final double CANVAS_HEIGHT = 800;
+	
 	private Frog frog;
-
+	private static final double FROG_DIM = Frog.RENDER_DIM;
+	private static final double FROG_SPAWN_X = CANVAS_WIDTH / 2 - (FROG_DIM / 2);
+	private static final double FROG_SPAWN_Y = CANVAS_HEIGHT - FROG_DIM;
+	
 	private Set<String> pressedKeys = new HashSet<String>();
+	
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -32,11 +39,11 @@ public class FroggerApp extends Application {
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 
-		Canvas canvas = new Canvas(800.0, 800.0);
+		Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		root.getChildren().add(canvas);
 
-		frog = new Frog("/com/lagocp/assets/frog.png", 730, 730, 0, 0, gc);
+		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(new KeyPressHandler());

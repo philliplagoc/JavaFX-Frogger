@@ -14,6 +14,7 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class Frog extends Sprite {
 	private static final double UNIT = 50;
+	public static final double RENDER_DIM = 70;
 	
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
@@ -31,7 +32,7 @@ public class Frog extends Sprite {
 
 	@Override
 	public void render(GraphicsContext gc) {
-		gc.drawImage(getImage(), getX(), getY(), 70, 70);
+		gc.drawImage(getImage(), getX(), getY(), RENDER_DIM, RENDER_DIM);
 	}
 	
 	/**
