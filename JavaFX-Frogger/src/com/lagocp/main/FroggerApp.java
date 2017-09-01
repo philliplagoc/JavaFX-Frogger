@@ -54,7 +54,7 @@ public class FroggerApp extends Application {
 			@Override
 			public void handle(long now) {
 
-				gc.clearRect(0, 0, 800, 800);
+				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 				frog.render(gc);
 			}
