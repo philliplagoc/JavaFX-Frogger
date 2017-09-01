@@ -5,7 +5,15 @@ import com.lagocp.gameEngine.sprite.Sprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * This class represents a Frog in Frogger.
+ * A frog will have an image, and can move (jump) in
+ * a direction by UNIT spaces.
+ * @author Phillip
+ *
+ */
 public class Frog extends Sprite {
+	private static final double UNIT = 50;
 	
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
@@ -24,6 +32,34 @@ public class Frog extends Sprite {
 	@Override
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY(), 70, 70);
+	}
+	
+	/**
+	 * Moves the frog one unit upwards.
+	 */
+	public void moveUp() {
+		this.setY(this.getY() - UNIT);
+	}
+	
+	/**
+	 * Moves the frog one unit left.
+	 */
+	public void moveLeft() {
+		this.setX(this.getX() - UNIT);
+	}
+	
+	/**
+	 * Moves the frog one unit right.
+	 */
+	public void moveRight() {
+		this.setX(this.getX() + UNIT);
+	}
+	
+	/**
+	 * Moves the unit one unit down.
+	 */
+	public void moveDown() {
+		this.setY(this.getY() + UNIT);
 	}
 
 }
