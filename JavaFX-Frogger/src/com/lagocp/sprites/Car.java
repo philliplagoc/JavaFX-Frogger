@@ -11,8 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class Car extends Sprite {
 	public static final double RENDER_DIM_WIDTH = 120;
 	public static final double RENDER_DIM_HEIGHT = 60;
-	private static final double MAX_CAR_SPEED = 8.0;
-	private static final double MIN_CAR_SPEED = 3.7;
+	private double maxCarSpeed = 8.0;
+	private double minCarSpeed = 3.7;
 	
 	private double carSpeed;
 	private Random random;
@@ -20,7 +20,7 @@ public class Car extends Sprite {
 	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
 		random = new Random();
-		this.carSpeed = genRandomInRange(MIN_CAR_SPEED, MAX_CAR_SPEED);
+		this.carSpeed = genRandomInRange(minCarSpeed, maxCarSpeed);
 	}
 
 	/**
@@ -36,7 +36,6 @@ public class Car extends Sprite {
 	}
 	@Override
 	public boolean didCollideWith(Sprite other) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -72,7 +71,6 @@ public class Car extends Sprite {
 	 */
 	public void moveLeft() {
 		this.setvX(getCarSpeed() * -1);
-		System.out.println(getCarSpeed());
 	}
 
 	public double getCarSpeed() {

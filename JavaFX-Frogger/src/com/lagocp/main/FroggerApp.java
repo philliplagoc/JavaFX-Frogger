@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.lagocp.sprites.Car;
 import com.lagocp.sprites.Frog;
+import com.lagocp.ui.FroggerUI;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -43,6 +44,8 @@ public class FroggerApp extends Application {
 	
 	private Set<String> pressedKeys = new HashSet<String>();
 	
+	private FroggerUI froggerUI;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Group root = new Group();
@@ -51,8 +54,13 @@ public class FroggerApp extends Application {
 
 		Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		root.getChildren().add(canvas);
-
+		
+		// Set-up UI
+		froggerUI = new FroggerUI(canvas);
+		froggerUI.initStats();
+		froggerUI.create();
+		froggerUI.placeCanvas(root);
+		
 		// Testing drawing sprites
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - CAR_DIM_HEIGHT, 0, 0, gc);
@@ -67,13 +75,17 @@ public class FroggerApp extends Application {
 			@Override
 			public void handle(long now) {
 				
+				froggerUI.updateUI(frog);
+				
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
 				car.moveLeft();
 				
 				car.update(ELAPSED_TIME_SPEED);
-
+				
+				frog.update(ELAPSED_TIME_SPEED);
+				
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 				frog.render(gc);
