@@ -13,8 +13,8 @@ import javafx.scene.canvas.GraphicsContext;
  *
  */
 public class Frog extends Sprite {
-	private static final double UNIT = 50;
-	public static final double RENDER_DIM = 70;
+	private static final double UNIT = 30;
+	public static final double RENDER_DIM = 60;
 	
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
@@ -22,11 +22,6 @@ public class Frog extends Sprite {
 
 	@Override
 	public boolean didCollideWith(Sprite other) {
-		return false;
-	}
-
-	@Override
-	public boolean didCollideWithWalls(Canvas canvas) {
 		return false;
 	}
 
@@ -61,6 +56,30 @@ public class Frog extends Sprite {
 	 */
 	public void moveDown() {
 		this.setY(this.getY() + UNIT);
+	}
+
+	@Override
+	public boolean didCollideWithTopWall(Canvas canvas) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean didCollideWithBotWall(Canvas canvas) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean didCollideWithLeftWall(Canvas canvas) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean didCollideWithRightWall(Canvas canvas) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
