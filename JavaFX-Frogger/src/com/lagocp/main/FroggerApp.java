@@ -63,7 +63,7 @@ public class FroggerApp extends Application {
 		
 		// Testing drawing sprites
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
-		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - CAR_DIM_HEIGHT, 0, 0, gc);
+		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT), 0, 0, gc);
 		Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
 		
 		canvas.setFocusTraversable(true);
