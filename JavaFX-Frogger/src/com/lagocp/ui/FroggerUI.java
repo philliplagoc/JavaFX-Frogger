@@ -2,6 +2,7 @@ package com.lagocp.ui;
 
 import com.lagocp.gameEngine.sprite.Sprite;
 import com.lagocp.gameEngine.ui.UI;
+import com.lagocp.sprites.Car;
 import com.lagocp.sprites.Frog;
 
 import javafx.geometry.Pos;
@@ -25,6 +26,7 @@ public class FroggerUI extends UI {
 	private BorderPane stats;
 	private HBox statsPane;
 	private Label froggerStats;
+	private Label carStats;
 
 	private HBox levelPane;
 
@@ -59,7 +61,13 @@ public class FroggerUI extends UI {
 			if (sprite instanceof Frog) {
 				froggerStats.setText("Frog: (" + sprite.getX() + ", " + sprite.getY() + ")\n" + "Center: ("
 						+ sprite.getCenterX() + ", " + sprite.getCenterY() + ")\n" + "vX: " + sprite.getvX() + " - vY: "
-						+ sprite.getvY());
+						+ sprite.getvY() + "\nWidth: " + sprite.getWidth() + "\nHeight: " + sprite.getHeight()
+						+ "\nHalfWidth: " + sprite.getHalfWidth() + "\nHalfHeight: " + sprite.getHalfHeight());
+			} else if (sprite instanceof Car) {
+				carStats.setText("Car: (" + sprite.getX() + ", " + sprite.getY() + ")\n" + "Center: ("
+						+ sprite.getCenterX() + ", " + sprite.getCenterY() + ")\n" + "vX: " + sprite.getvX() + " - vY: "
+						+ sprite.getvY() + "\nWidth: " + sprite.getWidth() + "\nHeight: " + sprite.getHeight()
+						+ "\nHalfWidth: " + sprite.getHalfWidth() + "\nHalfHeight: " + sprite.getHalfHeight());
 			}
 		}
 	}
@@ -70,12 +78,14 @@ public class FroggerUI extends UI {
 		stats = new BorderPane();
 		statsPane = new HBox();
 		froggerStats = new Label();
+		carStats = new Label();
 
 		// Set alignment
 		froggerStats.setAlignment(Pos.CENTER);
+		carStats.setAlignment(Pos.CENTER);
 
 		// Adding children
-		statsPane.getChildren().add(froggerStats);
+		statsPane.getChildren().addAll(froggerStats, carStats);
 		stats.setTop(statsPane);
 	}
 
