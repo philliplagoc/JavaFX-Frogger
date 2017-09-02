@@ -75,16 +75,18 @@ public class FroggerApp extends Application {
 			@Override
 			public void handle(long now) {
 				
-				froggerUI.updateUI(frog);
+				froggerUI.updateUI(frog, car);
 				
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
-				car.moveLeft();
+				//car.moveLeft();
 				
 				car.update(ELAPSED_TIME_SPEED);
 				
 				frog.update(ELAPSED_TIME_SPEED);
+				
+				car2.update(ELAPSED_TIME_SPEED);
 				
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
