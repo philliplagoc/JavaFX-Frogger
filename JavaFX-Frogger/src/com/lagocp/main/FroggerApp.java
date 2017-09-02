@@ -11,11 +11,16 @@ import com.lagocp.ui.FroggerUI;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 /**
@@ -65,6 +70,12 @@ public class FroggerApp extends Application {
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT), 0, 0, gc);
 		Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
+		// Rotating car 
+		ImageView iv = new ImageView(car.getImage());
+		iv.setRotationAxis(Rotate.Y_AXIS);
+		iv.setRotate(180);
+		Image rotatedImg = iv.snapshot(null, null);
+		car2.setImage(rotatedImg);
 		
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(new KeyPressHandler());
