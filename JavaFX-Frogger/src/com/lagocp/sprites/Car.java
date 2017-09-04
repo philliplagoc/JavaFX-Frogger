@@ -8,9 +8,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 public class Car extends Sprite {
 	public static final double DIM_WIDTH = 120;
@@ -20,55 +17,78 @@ public class Car extends Sprite {
 
 	private double carSpeed;
 	private Random random;
-	
-	private static final int TOLERANCE_THRESHOLD = 0xFF;
-	
+
+	private double xHitbox;
+	private double yHitbox;
+	private double widthHitbox;
+	private double heightHitbox;
+
+	public void setXHitbox(double x) {
+		xHitbox = x;
+	}
+
+	public void setYHitbox(double y) {
+		yHitbox = y;
+	}
+
+	public void setWidthHitbox(double width) {
+		widthHitbox = width;
+	}
+
+	public void setHeightHitbox(double height) {
+		heightHitbox = height;
+	}
+
+	public double getXHitbox() {
+		return xHitbox;
+	}
+
+	public double getYHitbox() {
+		return yHitbox;
+	}
+
+	public double getWidthHitbox() {
+		return widthHitbox;
+	}
+
+	public double getHeightHitbox() {
+		return heightHitbox;
+	}
+
 	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
 		random = new Random();
 		this.carSpeed = genRandomInRange(minCarSpeed, maxCarSpeed);
-		
+
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
-		//setImage(scaled);
-		
+		// setImage(scaled);
+
 		setWidth(scaled.getWidth());
 		setHalfWidth(getWidth() / 2);
-		setHeight(scaled.getHeight());
+		setHeight(scaled.getHeight() - 10);
 		setHalfHeight(getHeight() / 2);
-		
+
+		createHitbox(getX() + 10, getY() + 15, getWidth() - 20, getHeight() - 20);
 	}
-	
+
 	/**
-	 * Makes the desired image background transparent.
-	 * @param inputImage
-	 * @return
+	 * Creates a hit box for the Sprite.
+	 * 
+	 * @param x
+	 *            The upper-left x coordinate
+	 * @param y
+	 *            The upper-left y coordinate
+	 * @param width
+	 *            The width of the hit box
+	 * @param height
+	 *            The height of the hit box
 	 */
-	 private Image makeTransparent(Image inputImage) {
-	        int W = (int) inputImage.getWidth();
-	        int H = (int) inputImage.getHeight();
-	        WritableImage outputImage = new WritableImage(W, H);
-	        PixelReader reader = inputImage.getPixelReader();
-	        PixelWriter writer = outputImage.getPixelWriter();
-	        for (int y = 0; y < H; y++) {
-	            for (int x = 0; x < W; x++) {
-	                int argb = reader.getArgb(x, y);
-
-	                int r = (argb >> 16) & 0xFF;
-	                int g = (argb >> 8) & 0xFF;
-	                int b = argb & 0xFF;
-
-	                if (r >= TOLERANCE_THRESHOLD 
-	                        && g >= TOLERANCE_THRESHOLD 
-	                        && b >= TOLERANCE_THRESHOLD) {
-	                    argb &= 0x00FFFFFF;
-	                }
-
-	                writer.setArgb(x, y, argb);
-	            }
-	        }
-
-	        return outputImage;
-	    }
+	private void createHitbox(double x, double y, double width, double height) {
+		setXHitbox(x);
+		setYHitbox(y);
+		setWidthHitbox(width);
+		setHeightHitbox(height);
+	}
 
 	/**
 	 * Generates a random double within the range that is inclusive of min and max.
@@ -88,31 +108,31 @@ public class Car extends Sprite {
 	@Override
 	public boolean didCollideWith(Sprite other) {
 		if (other instanceof Frog) {
-			double frogX = other.getX();
-			double frogY = other.getY();
-			double frogHeight = other.getHeight();
-			double frogWidth = other.getWidth();
+			double frogX = ((Frog) other).getXHitbox();
+			double frogY = ((Frog) other).getYHitbox();
+			double frogHeight = ((Frog) other).getHeightHitbox();
+			double frogWidth = ((Frog) other).getWidthHitbox();
 
-			double x = this.getX();
-			double y = this.getY();
-			double height = this.getHeight();
-			double width = this.getWidth();
+			double x = this.getXHitbox();
+			double y = this.getYHitbox();
+			double height = this.getHeightHitbox();
+			double width = this.getWidthHitbox();
 
 			boolean xCond1 = x + width >= frogX;
 			boolean xCond2 = x + width <= frogX + frogWidth;
 			boolean xCond3 = x >= frogX;
 			boolean xCond4 = x <= frogX + frogWidth;
 			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
-//			System.out.println("X: " + collidedX);
+			// System.out.println("X: " + collidedX);
 			boolean yCond1 = y + height >= frogY;
 			boolean yCond2 = y + height <= frogY + frogHeight;
 			boolean yCond3 = y >= frogY;
 			boolean yCond4 = y <= frogY + frogHeight;
 			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
-//			System.out.println("Y: " + collidedY);
-			
-//			System.out.println(collidedX && collidedY);
-			
+			// System.out.println("Y: " + collidedY);
+
+			// System.out.println("Car: " + (collidedX && collidedY));
+
 			return collidedX && collidedY;
 		}
 		return false;
@@ -122,10 +142,13 @@ public class Car extends Sprite {
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY(), DIM_WIDTH, DIM_HEIGHT);
 		// Drawing boundaries
-		gc.strokeLine(getX(), getY(), getX() + getWidth(), getY()); // Top
-		gc.strokeLine(getX(), getY() + getHeight(), getX() + getWidth(), getY() + getHeight()); // Bot
-		gc.strokeLine(getX(), getY(), getX(), getY() + getHeight()); // Left
-		gc.strokeLine(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight()); // Right
+		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
+		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
+				getYHitbox() + getHeightHitbox()); // Bot
+		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
+		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
+				getYHitbox() + getHeightHitbox()); // Right
+		// Try using drawStrokeRect?
 	}
 
 	@Override

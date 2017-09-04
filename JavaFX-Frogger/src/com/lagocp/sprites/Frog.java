@@ -16,20 +16,108 @@ import javafx.scene.image.Image;
 public class Frog extends Sprite {
 	private static final double UNIT = 30;
 	public static final double DIM_WIDTH = 60;
-	public static final double DIM_HEIGHT = 60;
+	public static final double DIM_HEIGHT = 54;
+
+	private double xHitbox;
+	private double yHitbox;
+	private double widthHitbox;
+	private double heightHitbox;
+
+	public void setXHitbox(double x) {
+		xHitbox = x;
+	}
+
+	public void setYHitbox(double y) {
+		yHitbox = y;
+	}
+
+	public void setWidthHitbox(double width) {
+		widthHitbox = width;
+	}
+
+	public void setHeightHitbox(double height) {
+		heightHitbox = height;
+	}
+
+	public double getXHitbox() {
+		return xHitbox;
+	}
+
+	public double getYHitbox() {
+		return yHitbox;
+	}
+
+	public double getWidthHitbox() {
+		return widthHitbox;
+	}
+
+	public double getHeightHitbox() {
+		return heightHitbox;
+	}
 
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
+
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
 		setImage(scaled);
+
 		setWidth(scaled.getWidth());
 		setHalfWidth(getWidth() / 2);
 		setHeight(scaled.getHeight());
 		setHalfHeight(getHeight() / 2);
+
+		createHitbox(getX() + 10, getY() + 5, getWidth() - 20, getHeight() - 5);
+	}
+
+	/**
+	 * Creates a hit box for the Sprite.
+	 * 
+	 * @param x
+	 *            The upper-left x coordinate
+	 * @param y
+	 *            The upper-left y coordinate
+	 * @param width
+	 *            The width of the hit box
+	 * @param height
+	 *            The height of the hit box
+	 */
+	private void createHitbox(double x, double y, double width, double height) {
+		setXHitbox(x);
+		setYHitbox(y);
+		setWidthHitbox(width);
+		setHeightHitbox(height);
 	}
 
 	@Override
 	public boolean didCollideWith(Sprite other) {
+		if (other instanceof Car) {
+			double carX = ((Car) other).getXHitbox();
+			double carY = ((Car) other).getYHitbox();
+			double carHeight = ((Car) other).getHeightHitbox();
+			double carWidth = ((Car) other).getWidthHitbox();
+
+			double x = this.getXHitbox();
+			double y = this.getYHitbox();
+			double height = this.getHeightHitbox();
+			double width = this.getWidthHitbox();
+
+			boolean xCond1 = x + width >= carX;
+			boolean xCond2 = x + width <= carX + carWidth;
+			boolean xCond3 = x >= carX;
+			boolean xCond4 = x <= carX + carWidth;
+			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
+			// System.out.println("X: " + collidedX);
+			boolean yCond1 = y + height >= carY;
+			boolean yCond2 = y + height <= carY + carHeight;
+			boolean yCond3 = y >= carY;
+			boolean yCond4 = y <= carY + carHeight;
+			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
+			// System.out.println("Y: " + collidedY);
+
+			// System.out.println("Frog: " +(collidedX && collidedY));
+
+			return collidedX && collidedY;
+		}
 		return false;
 	}
 
@@ -37,12 +125,26 @@ public class Frog extends Sprite {
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY());
 		// Also going to draw lines that coincide with boundaries
-		gc.strokeLine(getX(), getY(), getX() + getWidth(), getY()); // Top
-		gc.strokeLine(getX(), getY() + getHeight(), getX() + getWidth(), getY() + getHeight()); // Bot
-		gc.strokeLine(getX(), getY(), getX(), getY() + getHeight()); // Left
-		gc.strokeLine(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight()); // Right
+		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
+		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
+				getYHitbox() + getHeightHitbox()); // Bot
+		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
+		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
+				getYHitbox() + getHeightHitbox()); // Right
 	}
 
+	@Override
+	public void update(double time) {
+		this.x += this.getvX() * time;
+		this.y += this.getvY() * time;
+
+		this.setCenterX(this.getX() + this.getHalfWidth());
+		this.setCenterY(this.getY() + this.getHalfHeight());
+		
+		setXHitbox(getX() + 10);
+		setYHitbox(getY() + 5);
+	}
+	
 	/**
 	 * Moves the frog one unit upwards.
 	 */
