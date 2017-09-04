@@ -69,7 +69,7 @@ public class FroggerApp extends Application {
 		// Testing drawing sprites
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT), 0, 0, gc);
-		 Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
+		//Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
 		// Rotating car 
 		//ImageView iv = new ImageView(car.getImage());
 		//iv.setRotationAxis(Rotate.Y_AXIS);
@@ -91,7 +91,7 @@ public class FroggerApp extends Application {
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
-				car.moveLeft();
+				//car.moveLeft();
 				
 				car.didCollideWith(frog);
 				
@@ -99,7 +99,7 @@ public class FroggerApp extends Application {
 				
 				frog.update(ELAPSED_TIME_SPEED);
 				
-				car2.update(ELAPSED_TIME_SPEED);
+//				car2.update(ELAPSED_TIME_SPEED);
 				
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -107,7 +107,7 @@ public class FroggerApp extends Application {
 				
 				car.render(gc);
 				
-				car2.render(gc);
+//				car2.render(gc);
 			}
 
 		}.start();

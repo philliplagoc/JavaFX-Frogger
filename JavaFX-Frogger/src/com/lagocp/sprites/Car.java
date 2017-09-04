@@ -8,6 +8,9 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 public class Car extends Sprite {
 	public static final double DIM_WIDTH = 120;
@@ -17,18 +20,55 @@ public class Car extends Sprite {
 
 	private double carSpeed;
 	private Random random;
-
+	
+	private static final int TOLERANCE_THRESHOLD = 0xFF;
+	
 	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
 		random = new Random();
 		this.carSpeed = genRandomInRange(minCarSpeed, maxCarSpeed);
+		
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
-		setImage(scaled);
+		//setImage(scaled);
+		
 		setWidth(scaled.getWidth());
-		setHalfWidth(scaled.getWidth() / 2);
+		setHalfWidth(getWidth() / 2);
 		setHeight(scaled.getHeight());
-		setHalfHeight(scaled.getHeight() / 2);
+		setHalfHeight(getHeight() / 2);
+		
 	}
+	
+	/**
+	 * Makes the desired image background transparent.
+	 * @param inputImage
+	 * @return
+	 */
+	 private Image makeTransparent(Image inputImage) {
+	        int W = (int) inputImage.getWidth();
+	        int H = (int) inputImage.getHeight();
+	        WritableImage outputImage = new WritableImage(W, H);
+	        PixelReader reader = inputImage.getPixelReader();
+	        PixelWriter writer = outputImage.getPixelWriter();
+	        for (int y = 0; y < H; y++) {
+	            for (int x = 0; x < W; x++) {
+	                int argb = reader.getArgb(x, y);
+
+	                int r = (argb >> 16) & 0xFF;
+	                int g = (argb >> 8) & 0xFF;
+	                int b = argb & 0xFF;
+
+	                if (r >= TOLERANCE_THRESHOLD 
+	                        && g >= TOLERANCE_THRESHOLD 
+	                        && b >= TOLERANCE_THRESHOLD) {
+	                    argb &= 0x00FFFFFF;
+	                }
+
+	                writer.setArgb(x, y, argb);
+	            }
+	        }
+
+	        return outputImage;
+	    }
 
 	/**
 	 * Generates a random double within the range that is inclusive of min and max.
@@ -58,17 +98,20 @@ public class Car extends Sprite {
 			double height = this.getHeight();
 			double width = this.getWidth();
 
-			boolean xCond1 = x + width > frogX;
-			boolean xCond2 = x + width < frogX + frogWidth;
-			boolean xCond3 = x > frogX;
-			boolean xCond4 = x < frogX + frogWidth;
+			boolean xCond1 = x + width >= frogX;
+			boolean xCond2 = x + width <= frogX + frogWidth;
+			boolean xCond3 = x >= frogX;
+			boolean xCond4 = x <= frogX + frogWidth;
 			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
-			
-			boolean yCond1 = y + height > frogY;
-			boolean yCond2 = y + height < frogY + frogHeight;
-			boolean yCond3 = y > frogY;
-			boolean yCond4 = y < frogY + frogHeight;
+//			System.out.println("X: " + collidedX);
+			boolean yCond1 = y + height >= frogY;
+			boolean yCond2 = y + height <= frogY + frogHeight;
+			boolean yCond3 = y >= frogY;
+			boolean yCond4 = y <= frogY + frogHeight;
 			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
+//			System.out.println("Y: " + collidedY);
+			
+//			System.out.println(collidedX && collidedY);
 			
 			return collidedX && collidedY;
 		}
