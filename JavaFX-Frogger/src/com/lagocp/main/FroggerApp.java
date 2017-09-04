@@ -91,10 +91,8 @@ public class FroggerApp extends Application {
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
-				//car.moveLeft();
+				car.moveLeft();
 				
-				//if(car.didCollideWith(frog) || frog.didCollideWith(car))
-				//	System.out.println("True!");
 				System.out.println(car.didCollideWith(frog) || frog.didCollideWith(car));
 				car.update(ELAPSED_TIME_SPEED);
 				

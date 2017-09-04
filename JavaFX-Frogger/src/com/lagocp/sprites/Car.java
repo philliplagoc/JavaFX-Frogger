@@ -22,38 +22,11 @@ public class Car extends Sprite {
 	private double yHitbox;
 	private double widthHitbox;
 	private double heightHitbox;
-
-	public void setXHitbox(double x) {
-		xHitbox = x;
-	}
-
-	public void setYHitbox(double y) {
-		yHitbox = y;
-	}
-
-	public void setWidthHitbox(double width) {
-		widthHitbox = width;
-	}
-
-	public void setHeightHitbox(double height) {
-		heightHitbox = height;
-	}
-
-	public double getXHitbox() {
-		return xHitbox;
-	}
-
-	public double getYHitbox() {
-		return yHitbox;
-	}
-
-	public double getWidthHitbox() {
-		return widthHitbox;
-	}
-
-	public double getHeightHitbox() {
-		return heightHitbox;
-	}
+	
+	private static final double XHITBOX_OFFSET = 10;
+	private static final double YHITBOX_OFFSET = 15;
+	private static final double WIDTH_HITBOX_OFFSET = 20;
+	private static final double HEIGHT_HITBOX_OFFSET = 20;
 
 	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
@@ -68,7 +41,7 @@ public class Car extends Sprite {
 		setHeight(scaled.getHeight() - 10);
 		setHalfHeight(getHeight() / 2);
 
-		createHitbox(getX() + 10, getY() + 15, getWidth() - 20, getHeight() - 20);
+		createHitbox(getX() + XHITBOX_OFFSET, getY() + YHITBOX_OFFSET, getWidth() - WIDTH_HITBOX_OFFSET, getHeight() - HEIGHT_HITBOX_OFFSET);
 	}
 
 	/**
@@ -150,6 +123,18 @@ public class Car extends Sprite {
 				getYHitbox() + getHeightHitbox()); // Right
 		// Try using drawStrokeRect?
 	}
+	
+	@Override
+	public void update(double time) {
+		this.x += this.getvX() * time;
+		this.y += this.getvY() * time;
+
+		this.setCenterX(this.getX() + this.getHalfWidth());
+		this.setCenterY(this.getY() + this.getHalfHeight());
+		
+		setXHitbox(getX() + XHITBOX_OFFSET);
+		setYHitbox(getY() + YHITBOX_OFFSET);
+	}
 
 	@Override
 	public boolean didCollideWithTopWall(Canvas canvas) {
@@ -187,4 +172,37 @@ public class Car extends Sprite {
 	public void setCarSpeed(double carSpeed) {
 		this.carSpeed = carSpeed;
 	}
+
+	public void setXHitbox(double x) {
+		xHitbox = x;
+	}
+
+	public void setYHitbox(double y) {
+		yHitbox = y;
+	}
+
+	public void setWidthHitbox(double width) {
+		widthHitbox = width;
+	}
+
+	public void setHeightHitbox(double height) {
+		heightHitbox = height;
+	}
+
+	public double getXHitbox() {
+		return xHitbox;
+	}
+
+	public double getYHitbox() {
+		return yHitbox;
+	}
+
+	public double getWidthHitbox() {
+		return widthHitbox;
+	}
+
+	public double getHeightHitbox() {
+		return heightHitbox;
+	}
+
 }

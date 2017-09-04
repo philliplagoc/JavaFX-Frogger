@@ -14,7 +14,7 @@ import javafx.scene.image.Image;
  *
  */
 public class Frog extends Sprite {
-	private static final double UNIT = 30;
+	private static final double UNIT = 36;
 	public static final double DIM_WIDTH = 60;
 	public static final double DIM_HEIGHT = 54;
 
@@ -22,38 +22,11 @@ public class Frog extends Sprite {
 	private double yHitbox;
 	private double widthHitbox;
 	private double heightHitbox;
-
-	public void setXHitbox(double x) {
-		xHitbox = x;
-	}
-
-	public void setYHitbox(double y) {
-		yHitbox = y;
-	}
-
-	public void setWidthHitbox(double width) {
-		widthHitbox = width;
-	}
-
-	public void setHeightHitbox(double height) {
-		heightHitbox = height;
-	}
-
-	public double getXHitbox() {
-		return xHitbox;
-	}
-
-	public double getYHitbox() {
-		return yHitbox;
-	}
-
-	public double getWidthHitbox() {
-		return widthHitbox;
-	}
-
-	public double getHeightHitbox() {
-		return heightHitbox;
-	}
+	
+	private static final double XHITBOX_OFFSET = 10;
+	private static final double YHITBOX_OFFSET = 5;
+	private static final double WIDTH_HITBOX_OFFSET = 20;
+	private static final double HEIGHT_HITBOX_OFFSET = 5;
 
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
@@ -66,7 +39,7 @@ public class Frog extends Sprite {
 		setHeight(scaled.getHeight());
 		setHalfHeight(getHeight() / 2);
 
-		createHitbox(getX() + 10, getY() + 5, getWidth() - 20, getHeight() - 5);
+		createHitbox(getX() + XHITBOX_OFFSET, getY() + YHITBOX_OFFSET, getWidth() - WIDTH_HITBOX_OFFSET, getHeight() - HEIGHT_HITBOX_OFFSET);
 	}
 
 	/**
@@ -141,8 +114,8 @@ public class Frog extends Sprite {
 		this.setCenterX(this.getX() + this.getHalfWidth());
 		this.setCenterY(this.getY() + this.getHalfHeight());
 		
-		setXHitbox(getX() + 10);
-		setYHitbox(getY() + 5);
+		setXHitbox(getX() + XHITBOX_OFFSET);
+		setYHitbox(getY() + YHITBOX_OFFSET);
 	}
 	
 	/**
@@ -195,6 +168,38 @@ public class Frog extends Sprite {
 	public boolean didCollideWithRightWall(Canvas canvas) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public void setXHitbox(double x) {
+		xHitbox = x;
+	}
+
+	public void setYHitbox(double y) {
+		yHitbox = y;
+	}
+
+	public void setWidthHitbox(double width) {
+		widthHitbox = width;
+	}
+
+	public void setHeightHitbox(double height) {
+		heightHitbox = height;
+	}
+
+	public double getXHitbox() {
+		return xHitbox;
+	}
+
+	public double getYHitbox() {
+		return yHitbox;
+	}
+
+	public double getWidthHitbox() {
+		return widthHitbox;
+	}
+
+	public double getHeightHitbox() {
+		return heightHitbox;
 	}
 
 }
