@@ -22,16 +22,25 @@ public class Car extends Sprite {
 	private double yHitbox;
 	private double widthHitbox;
 	private double heightHitbox;
-	
-	private static final double XHITBOX_OFFSET = 10;
-	private static final double YHITBOX_OFFSET = 15;
-	private static final double WIDTH_HITBOX_OFFSET = 20;
-	private static final double HEIGHT_HITBOX_OFFSET = 20;
 
-	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
+	private static final double XHITBOX_OFFSET_LEFT = 10;
+	private static final double YHITBOX_OFFSET_LEFT = 15;
+	private static final double WIDTH_HITBOX_OFFSET_LEFT = 20;
+	private static final double HEIGHT_HITBOX_OFFSET_LEFT = 20;
+
+	private static final double XHITBOX_OFFSET_RIGHT = 10;
+	private static final double YHITBOX_OFFSET_RIGHT = 15;
+	private static final double WIDTH_HITBOX_OFFSET_RIGHT = 20;
+	private static final double HEIGHT_HITBOX_OFFSET_RIGHT = 0;
+
+	private String name;
+
+	public Car(String imageFile, double x, double y, double width, double height, GraphicsContext gc, String name) {
 		super(imageFile, x, y, width, height, gc);
 		random = new Random();
 		this.carSpeed = genRandomInRange(minCarSpeed, maxCarSpeed);
+
+		this.name = name;
 
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
 		// setImage(scaled);
@@ -41,7 +50,12 @@ public class Car extends Sprite {
 		setHeight(scaled.getHeight() - 10);
 		setHalfHeight(getHeight() / 2);
 
-		createHitbox(getX() + XHITBOX_OFFSET, getY() + YHITBOX_OFFSET, getWidth() - WIDTH_HITBOX_OFFSET, getHeight() - HEIGHT_HITBOX_OFFSET);
+		if (name.equals("LeftFacing"))
+			createHitbox(getX() + XHITBOX_OFFSET_LEFT, getY() + YHITBOX_OFFSET_LEFT,
+					getWidth() - WIDTH_HITBOX_OFFSET_LEFT, getHeight() - HEIGHT_HITBOX_OFFSET_LEFT);
+		else if (name.equals("RightFacing"))
+			createHitbox(getX() + XHITBOX_OFFSET_RIGHT, getY() + YHITBOX_OFFSET_RIGHT,
+					getWidth() - WIDTH_HITBOX_OFFSET_RIGHT, getHeight() + HEIGHT_HITBOX_OFFSET_RIGHT);
 	}
 
 	/**
@@ -123,7 +137,7 @@ public class Car extends Sprite {
 				getYHitbox() + getHeightHitbox()); // Right
 		// Try using drawStrokeRect?
 	}
-	
+
 	@Override
 	public void update(double time) {
 		this.x += this.getvX() * time;
@@ -131,9 +145,14 @@ public class Car extends Sprite {
 
 		this.setCenterX(this.getX() + this.getHalfWidth());
 		this.setCenterY(this.getY() + this.getHalfHeight());
-		
-		setXHitbox(getX() + XHITBOX_OFFSET);
-		setYHitbox(getY() + YHITBOX_OFFSET);
+
+		if (getName().equals("LeftFacing")) {
+			setXHitbox(getX() + XHITBOX_OFFSET_LEFT);
+			setYHitbox(getY() + YHITBOX_OFFSET_LEFT);
+		} else if(getName().equals("RightFacing")) {
+			setXHitbox(getX() + XHITBOX_OFFSET_RIGHT);
+			setYHitbox(getY() + YHITBOX_OFFSET_RIGHT);
+		}
 	}
 
 	@Override
@@ -163,6 +182,13 @@ public class Car extends Sprite {
 	 */
 	public void moveLeft() {
 		this.setvX(getCarSpeed() * -1);
+	}
+	
+	/**
+	 * Moves the car right.
+	 */
+	public void moveRight() {
+		this.setvX(getCarSpeed());
 	}
 
 	public double getCarSpeed() {
@@ -205,4 +231,11 @@ public class Car extends Sprite {
 		return heightHitbox;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

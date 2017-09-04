@@ -68,14 +68,14 @@ public class FroggerApp extends Application {
 		
 		// Testing drawing sprites
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
-		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - 30, 0, 0, gc);
-		//Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
+		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - 30, 0, 0, gc, "LeftFacing");
+		Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM - 50, 0, 0, gc, "RightFacing");
 		// Rotating car 
 		//ImageView iv = new ImageView(car.getImage());
 		//iv.setRotationAxis(Rotate.Y_AXIS);
-		//iv.setRotate(180);
-		//Image rotatedImg = iv.snapshot(null, null);
-		//car2.setImage(rotatedImg);*/
+//		iv.setRotate(180);
+//		Image rotatedImg = iv.snapshot(null, null);
+//		car2.setImage(rotatedImg);
 		
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(new KeyPressHandler());
@@ -91,14 +91,19 @@ public class FroggerApp extends Application {
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
-				car.moveLeft();
 				
-				System.out.println(car.didCollideWith(frog) || frog.didCollideWith(car));
+				if(car2.didCollideWithRightWall(canvas)) {
+					car2.setX(0 - car2.getWidth());
+				}
+				//car.moveLeft();
+				//car2.moveRight();
+				
+				System.out.println(car2.didCollideWith(frog) || frog.didCollideWith(car2));
 				car.update(ELAPSED_TIME_SPEED);
 				
 				frog.update(ELAPSED_TIME_SPEED);
 				
-//				car2.update(ELAPSED_TIME_SPEED);
+				car2.update(ELAPSED_TIME_SPEED);
 				
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -106,7 +111,7 @@ public class FroggerApp extends Application {
 				
 				car.render(gc);
 				
-//				car2.render(gc);
+				car2.render(gc);
 			}
 
 		}.start();
