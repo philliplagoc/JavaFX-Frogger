@@ -38,13 +38,13 @@ public class FroggerApp extends Application {
 	private static final double CANVAS_HEIGHT = 720;
 	
 	private Frog frog;
-	private static final double FROG_DIM = Frog.RENDER_DIM;
+	private static final double FROG_DIM = Frog.DIM_WIDTH;
 	private static final double FROG_SPAWN_X = CANVAS_WIDTH / 2 - (FROG_DIM / 2);
 	private static final double FROG_SPAWN_Y = CANVAS_HEIGHT - FROG_DIM;
 	
 	// Will help in determining which car collided with the frog
 	private ArrayList<Car> cars = new ArrayList<Car>();
-	private static final double CAR_DIM_HEIGHT = Car.RENDER_DIM_HEIGHT;
+	private static final double CAR_DIM_HEIGHT = Car.DIM_HEIGHT;
 	private static final double ELAPSED_TIME_SPEED = 1;
 	
 	private Set<String> pressedKeys = new HashSet<String>();
@@ -69,13 +69,13 @@ public class FroggerApp extends Application {
 		// Testing drawing sprites
 		frog = new Frog("/com/lagocp/assets/frog.png", FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 		Car car = new Car("/com/lagocp/assets/car-facing-left.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT), 0, 0, gc);
-		Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
+		 Car car2 = new Car("/com/lagocp/assets/car-facing-right.png", CANVAS_WIDTH / 2 - (CAR_DIM_HEIGHT / 2), CANVAS_HEIGHT - (2 * CAR_DIM_HEIGHT) - FROG_DIM, 0, 0, gc);
 		// Rotating car 
-		ImageView iv = new ImageView(car.getImage());
-		iv.setRotationAxis(Rotate.Y_AXIS);
-		iv.setRotate(180);
-		Image rotatedImg = iv.snapshot(null, null);
-		car2.setImage(rotatedImg);
+		//ImageView iv = new ImageView(car.getImage());
+		//iv.setRotationAxis(Rotate.Y_AXIS);
+		//iv.setRotate(180);
+		//Image rotatedImg = iv.snapshot(null, null);
+		//car2.setImage(rotatedImg);*/
 		
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(new KeyPressHandler());
@@ -91,7 +91,9 @@ public class FroggerApp extends Application {
 				if(car.didCollideWithLeftWall(canvas)) {
 					car.setX(CANVAS_WIDTH);
 				}
-				//car.moveLeft();
+				car.moveLeft();
+				
+				car.didCollideWith(frog);
 				
 				car.update(ELAPSED_TIME_SPEED);
 				
