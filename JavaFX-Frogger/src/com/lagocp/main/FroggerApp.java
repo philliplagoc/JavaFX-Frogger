@@ -144,6 +144,7 @@ public class FroggerApp extends Application {
 		frog = new Frog(FROG_FILE_NAME, FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 		
 		double ySpawnInc = 0;
+		
 		Random rand = new Random();
 		for (int i = 0; i < 5; i++) {
 			double ySpawn = genRandomInRange(0, CANVAS_HEIGHT - FROG_SPAWN_Y - CAR_DIM_HEIGHT);
