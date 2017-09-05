@@ -109,16 +109,14 @@ public class Car extends Sprite {
 			boolean xCond2 = x + width <= frogX + frogWidth;
 			boolean xCond3 = x >= frogX;
 			boolean xCond4 = x <= frogX + frogWidth;
+			
 			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
-			// System.out.println("X: " + collidedX);
+			
 			boolean yCond1 = y + height >= frogY;
 			boolean yCond2 = y + height <= frogY + frogHeight;
 			boolean yCond3 = y >= frogY;
 			boolean yCond4 = y <= frogY + frogHeight;
 			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
-			// System.out.println("Y: " + collidedY);
-
-			// System.out.println("Car: " + (collidedX && collidedY));
 
 			return collidedX && collidedY;
 		}
@@ -135,7 +133,6 @@ public class Car extends Sprite {
 		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
 		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
 				getYHitbox() + getHeightHitbox()); // Right
-		// Try using drawStrokeRect?
 	}
 
 	@Override
