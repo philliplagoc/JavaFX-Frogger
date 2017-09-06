@@ -1,6 +1,7 @@
 package com.lagocp.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -22,20 +23,17 @@ import javafx.stage.Stage;
 /**
  * This is the main class where the application will run from.
  * 
- * NOTE: Everything moves in units of 3, and all scaling should be done to
- * factors of 3. Don't make collisions <= or >=; instead, make collisions
- * strictly < or >.
- * 
  * @author Phillip
  *
  */
 public class FroggerApp extends Application {
-	private static final double CANVAS_WIDTH = 540;
+	private static final double CANVAS_WIDTH = 600;
 	private static final double CANVAS_HEIGHT = 720;
 
 	private Frog frog;
 	private static final String FROG_FILE_NAME = "/com/lagocp/assets/frog.png";
 	private static final double FROG_DIM_WIDTH = Frog.DIM_WIDTH;
+	private static final double FROG_DIM_HEIGHT = Frog.DIM_HEIGHT;
 	private static final double FROG_SPAWN_X = CANVAS_WIDTH / 2 - (FROG_DIM_WIDTH / 2);
 	private static final double FROG_SPAWN_Y = CANVAS_HEIGHT - FROG_DIM_WIDTH;
 
@@ -45,6 +43,7 @@ public class FroggerApp extends Application {
 	private static final String CAR_LEFT_FILE_NAME = "/com/lagocp/assets/car-facing-left.png";
 	private static final String CAR_RIGHT_FILE_NAME = "/com/lagocp/assets/car-facing-right.png";
 	private static final double CAR_DIM_HEIGHT = Car.DIM_HEIGHT;
+	private static final double CAR_DIM_WIDTH = Car.DIM_WIDTH;
 
 	private static final double ELAPSED_TIME_SPEED = 1;
 
@@ -53,6 +52,8 @@ public class FroggerApp extends Application {
 	private FroggerUI froggerUI;
 
 	private int level = 0;
+	private static final double LEVEL_EDGE = 30; // Min y coordinate where cars cannot spawn
+	private static final double SAFEZONE = 630; // Max y coordinate where cars cannot spawn
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -72,56 +73,37 @@ public class FroggerApp extends Application {
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(new KeyPressHandler());
 		canvas.setOnKeyReleased(new KeyReleasedHandler());
-		
+
 		spawn(gc);
 
 		new AnimationTimer() {
 
 			@Override
 			public void handle(long now) {
+				froggerUI.updateUI(frog, cars.get(0));
 
-				/*
-				 * froggerUI.updateUI(frog, car);
-				 * 
-				 * if(car.didCollideWithLeftWall(canvas)) { car.setX(CANVAS_WIDTH); }
-				 * 
-				 * if(car2.didCollideWithRightWall(canvas)) { car2.setX(0 - car2.getWidth()); }
-				 * car.moveLeft(); car2.moveRight();
-				 * 
-				 * car.update(ELAPSED_TIME_SPEED);
-				 * 
-				 * frog.update(ELAPSED_TIME_SPEED);
-				 * 
-				 * car2.update(ELAPSED_TIME_SPEED);
-				 * 
-				 * gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-				 * 
-				 * frog.render(gc);
-				 * 
-				 * car.render(gc);
-				 * 
-				 * car2.render(gc);
-				 */
-				
 				frog.update(ELAPSED_TIME_SPEED);
-				
-				for(int i = 0; i < cars.size(); i++) {
+
+				for (int i = 0; i < cars.size(); i++) {
 					Car car = cars.get(i);
-					
-					if(car.didCollideWithLeftWall(canvas)) {
+
+					if (car.didCollideWithLeftWall(canvas)) {
 						car.setX(CANVAS_WIDTH);
-					} else if(car.didCollideWithRightWall(canvas)) {
+					} else if (car.didCollideWithRightWall(canvas)) {
 						car.setX(0 - car.getWidth());
 					}
-					
+
+					if (car.didCollideWith(frog) || frog.didCollideWith(car))
+						System.out.println("Frog was hit!");
+
 					car.update(ELAPSED_TIME_SPEED);
 				}
-				
+
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-				
+
 				frog.render(gc);
-				
-				for(int i = 0; i < cars.size(); i++) {
+
+				for (int i = 0; i < cars.size(); i++) {
 					cars.get(i).render(gc);
 				}
 			}
@@ -137,21 +119,68 @@ public class FroggerApp extends Application {
 
 	/**
 	 * Spawns all necessary sprites.
-	 * @param gc The GraphicsContext to draw with.
+	 * 
+	 * @param gc
+	 *            The GraphicsContext to draw with.
 	 */
 	private void spawn(GraphicsContext gc) {
 		// Spawning frog
 		frog = new Frog(FROG_FILE_NAME, FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
-		
-		double ySpawnInc = 0;
-		
-		Random rand = new Random();
+
+		// Get possible spawns for a car
+		double[] xSpawns = getSpawns(CAR_DIM_WIDTH, 0, CANVAS_WIDTH - CAR_DIM_WIDTH);
+		double[] ySpawns = getSpawns(CAR_DIM_HEIGHT, LEVEL_EDGE, SAFEZONE);
+
+		// Start spawning cars
 		for (int i = 0; i < 5; i++) {
-			double ySpawn = genRandomInRange(0, CANVAS_HEIGHT - FROG_SPAWN_Y - CAR_DIM_HEIGHT);
-			Car car = (rand.nextBoolean() ? spawnLeftCar(gc, ySpawn + ySpawnInc) : spawnRightCar(gc, ySpawn + ySpawnInc));
+			Random r = new Random();
+			
+			// Get a random xSpawn and ySpawn
+			int xSpawnInd = getRandomIndex(xSpawns);
+			double xSpawn  = xSpawns[xSpawnInd];
+			int ySpawnInd = getRandomIndex(ySpawns);
+			double ySpawn = ySpawns[ySpawnInd];
+			
+			Car car = (r.nextBoolean() ? spawnLeftCar(gc, xSpawn, ySpawn) : spawnRightCar(gc, xSpawn, ySpawn));
+			
 			cars.add(car);
-			ySpawnInc += CAR_DIM_HEIGHT;
 		}
+	}
+
+	/**
+	 * Gets a random index from the inputted array.
+	 * 
+	 * @param array
+	 *            The array to get a random index from.
+	 * @return A random index from the array.
+	 */
+	private int getRandomIndex(double[] array) {
+		Random random = new Random();
+		int ind = random.nextInt(array.length);
+		return ind;
+	}
+
+	/**
+	 * Returns an array that will hold the potential spawns of a Car.
+	 * 
+	 * @param increase
+	 *            The value by which to increase each spawn
+	 * @param min
+	 *            The minimum value for which all spawn points will be greater
+	 * @param max
+	 *            The maximum value for which all spawn points will be less than
+	 * @return An array containing all possible spawn points.
+	 */
+	private double[] getSpawns(double increase, double min, double max) {
+		double[] spawns = new double[(int) ((max - min) / increase)];
+		double ySpawn = min;
+
+		for (int i = 0; i < spawns.length; i++) {
+			spawns[i] = ySpawn;
+			ySpawn += increase;
+		}
+
+		return spawns;
 	}
 
 	/**
@@ -160,8 +189,8 @@ public class FroggerApp extends Application {
 	 * @param gc
 	 *            The GraphicsContext to draw with.
 	 */
-	private Car spawnLeftCar(GraphicsContext gc, double ySpawn) {
-		Car car = new Car(CAR_LEFT_FILE_NAME, CANVAS_WIDTH - (2 *  CAR_DIM_HEIGHT), ySpawn, 0, 0, gc, CAR_LEFT_NAME);
+	private Car spawnLeftCar(GraphicsContext gc, double xSpawn, double ySpawn) {
+		Car car = new Car(CAR_LEFT_FILE_NAME, xSpawn, ySpawn, 0, 0, gc, CAR_LEFT_NAME);
 		car.moveLeft();
 		return car;
 	}
@@ -172,8 +201,8 @@ public class FroggerApp extends Application {
 	 * @param gc
 	 *            The GraphicsContext to draw with.
 	 */
-	private Car spawnRightCar(GraphicsContext gc, double ySpawn) {
-		Car car = new Car(CAR_RIGHT_FILE_NAME, 0, ySpawn, 0, 0, gc, CAR_RIGHT_NAME);
+	private Car spawnRightCar(GraphicsContext gc, double xSpawn, double ySpawn) {
+		Car car = new Car(CAR_RIGHT_FILE_NAME, xSpawn, ySpawn, 0, 0, gc, CAR_RIGHT_NAME);
 		car.moveRight();
 		return car;
 	}
@@ -193,7 +222,7 @@ public class FroggerApp extends Application {
 		double result = min + (randomDouble * (max - min));
 		return result;
 	}
-	
+
 	/**
 	 * This class handles the frog's movement from the keyboard. The user cannot
 	 * move diagonally, and can only move once a key is released.

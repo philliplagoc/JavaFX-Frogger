@@ -26,7 +26,7 @@ public class Frog extends Sprite {
 	private static final double XHITBOX_OFFSET = 10;
 	private static final double YHITBOX_OFFSET = 5;
 	private static final double WIDTH_HITBOX_OFFSET = 20;
-	private static final double HEIGHT_HITBOX_OFFSET = 5;
+	private static final double HEIGHT_HITBOX_OFFSET = 15;
 
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);

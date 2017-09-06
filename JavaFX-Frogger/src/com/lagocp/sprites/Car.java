@@ -15,7 +15,7 @@ public class Car extends Sprite {
 	private double maxCarSpeed = 8.0;
 	private double minCarSpeed = 3.7;
 
-	private double carSpeed;
+	private double carSpeed; 
 	private Random random;
 
 	private double xHitbox;
