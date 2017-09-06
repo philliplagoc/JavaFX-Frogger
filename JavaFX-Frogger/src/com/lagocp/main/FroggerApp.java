@@ -55,9 +55,11 @@ public class FroggerApp extends Application {
 	private int level = 0;
 	private static final double LEVEL_EDGE = 30; // Min y coordinate where cars cannot spawn
 	private static final double SAFEZONE = 630; // Max y coordinate where cars cannot spawn
-	
-	private ArrayList<Track> tracks = new ArrayList<Track>();
-	
+
+	// private ArrayList<Track> tracks = new ArrayList<Track>();
+	private Track[] tracks;
+	private int limit = 4;
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Group root = new Group();
@@ -78,9 +80,9 @@ public class FroggerApp extends Application {
 		canvas.setOnKeyReleased(new KeyReleasedHandler());
 
 		spawn(gc);
-		
+
 		new AnimationTimer() {
-			
+
 			@Override
 			public void handle(long now) {
 				froggerUI.updateUI(frog, cars.get(0));
@@ -98,26 +100,28 @@ public class FroggerApp extends Application {
 
 					if (car.didCollideWith(frog) || frog.didCollideWith(car))
 						System.out.println("Frog was hit!");
-
+					
 					car.update(ELAPSED_TIME_SPEED);
 				}
 
 				gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-				
-				for (int i = 0; i < tracks.size(); i++) {
-					tracks.get(i).render(gc);
+
+				for (int i = 0; i < tracks.length; i++) {
+					Track track = tracks[i];
+					if (track != null)
+						track.render(gc);
 				}
-				
+
 				frog.render(gc);
 
 				for (int i = 0; i < cars.size(); i++) {
 					cars.get(i).render(gc);
 				}
-				
+
 			}
 
 		}.start();
-		
+
 		primaryStage.show();
 	}
 
@@ -138,29 +142,48 @@ public class FroggerApp extends Application {
 		// Get possible spawns for a car
 		double[] xSpawns = getSpawns(CAR_DIM_WIDTH, 0, CANVAS_WIDTH - CAR_DIM_WIDTH);
 		double[] ySpawns = getSpawns(CAR_DIM_HEIGHT, LEVEL_EDGE, SAFEZONE);
-		
+
 		// Array is for determining where tracks get spawned
 		boolean[] trackSpawnedHere = new boolean[ySpawns.length];
+		tracks = new Track[ySpawns.length];
 
 		// Start spawning cars
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 40; i++) {
 			Random r = new Random();
-			
+
 			// Get a random xSpawn and ySpawn
 			int xSpawnInd = getRandomIndex(xSpawns);
-			double xSpawn  = xSpawns[xSpawnInd];
+			double xSpawn = xSpawns[xSpawnInd];
 			int ySpawnInd = getRandomIndex(ySpawns);
 			double ySpawn = ySpawns[ySpawnInd];
-			
-			// Spawning tracks
-			if(!trackSpawnedHere[ySpawnInd]) {
-				Track track = new Track(0, ySpawn + 7.5, Track.WIDTH, Track.HEIGHT, gc, 4);
-				tracks.add(track);
-			}
-			trackSpawnedHere[ySpawnInd] = true;
-			
+
 			Car car = (r.nextBoolean() ? spawnLeftCar(gc, xSpawn, ySpawn) : spawnRightCar(gc, xSpawn, ySpawn));
-			
+
+			// Spawning tracks
+			if (!trackSpawnedHere[ySpawnInd]) {
+				Track track = new Track(0, ySpawn + 7.5, Track.WIDTH, Track.HEIGHT, gc, limit);
+				track.addCar(car);
+
+				tracks[ySpawnInd] = track;
+				trackSpawnedHere[ySpawnInd] = true;
+			} else {
+				Track track = tracks[ySpawnInd];
+				Car trackCar = track.getCars().get(0);
+
+				// Make cars go in same direction
+				if (!(car.getName().equals(trackCar.getName()))) {
+					car = (trackCar.getName().equals(CAR_LEFT_NAME) ? spawnLeftCar(gc, xSpawn, ySpawn)
+							: spawnRightCar(gc, xSpawn, ySpawn));
+				}
+
+				// Reposition car if in same spawn as trackCar
+				if(car.didCollideWith(trackCar)) {
+					car.setX(trackCar.getX() + CAR_DIM_WIDTH);
+				}
+
+				car.setvX(trackCar.getvX());
+			}
+
 			cars.add(car);
 		}
 	}

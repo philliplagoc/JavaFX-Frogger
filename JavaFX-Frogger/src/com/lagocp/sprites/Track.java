@@ -1,5 +1,7 @@
 package com.lagocp.sprites;
 
+import java.util.ArrayList;
+
 import com.lagocp.gameEngine.sprite.Sprite;
 import com.lagocp.main.FroggerApp;
 
@@ -20,14 +22,12 @@ public class Track extends Sprite {
 	public static final double HEIGHT = Car.DIM_HEIGHT - 5;
 	private static final Color COLOR = Color.GRAY;
 
-	private Car[] cars;
-
-	private double[] dashes = { 0, 30, 60, 90, 120, 150 };
+	private ArrayList<Car> cars;
 
 	public Track(double x, double y, double width, double height, GraphicsContext gc, int limit) {
 		super(x, y, width, height, gc);
 		setLimit(limit);
-		cars = new Car[getLimit()];
+		cars = new ArrayList<Car>();
 	}
 
 	@Override
@@ -71,6 +71,10 @@ public class Track extends Sprite {
 		 * gc.setStroke(Color.BLACK);
 		 */
 	}
+	
+	public void addCar(Car car) {
+		this.cars.add(car);
+	}
 
 	public int getLimit() {
 		return limit;
@@ -80,12 +84,8 @@ public class Track extends Sprite {
 		this.limit = limit;
 	}
 
-	public Car[] getCars() {
+	public ArrayList<Car> getCars() {
 		return cars;
-	}
-
-	public void setCars(Car[] cars) {
-		this.cars = cars;
 	}
 
 }
