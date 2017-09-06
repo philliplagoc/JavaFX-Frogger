@@ -123,7 +123,7 @@ public class Car extends Sprite {
 			double carX = ((Car) other).getXHitbox();
 			double carY = ((Car) other).getYHitbox();
 			double carHeight = ((Car) other).getHeightHitbox();
-			double carWidth = ((Car) other).getWidthHitbox();
+			double frogWidth = ((Car) other).getWidthHitbox();
 
 			double x = this.getXHitbox();
 			double y = this.getYHitbox();
@@ -131,9 +131,9 @@ public class Car extends Sprite {
 			double width = this.getWidthHitbox();
 
 			boolean xCond1 = x + width >= carX;
-			boolean xCond2 = x + width <= carX + carWidth;
+			boolean xCond2 = x + width <= carX + frogWidth;
 			boolean xCond3 = x >= carX;
-			boolean xCond4 = x <= carX + carWidth;
+			boolean xCond4 = x <= carX + frogWidth;
 			
 			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
 			
