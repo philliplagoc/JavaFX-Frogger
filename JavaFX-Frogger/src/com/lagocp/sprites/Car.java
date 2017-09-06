@@ -15,7 +15,7 @@ public class Car extends Sprite {
 	private double maxCarSpeed = 8.0;
 	private double minCarSpeed = 3.7;
 
-	private double carSpeed;
+	private double carSpeed; 
 	private Random random;
 
 	private double xHitbox;
@@ -116,6 +116,31 @@ public class Car extends Sprite {
 			boolean yCond2 = y + height <= frogY + frogHeight;
 			boolean yCond3 = y >= frogY;
 			boolean yCond4 = y <= frogY + frogHeight;
+			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
+
+			return collidedX && collidedY;
+		} else if(other instanceof Car) {
+			double carX = ((Car) other).getXHitbox();
+			double carY = ((Car) other).getYHitbox();
+			double carHeight = ((Car) other).getHeightHitbox();
+			double carWidth = ((Car) other).getWidthHitbox();
+
+			double x = this.getXHitbox();
+			double y = this.getYHitbox();
+			double height = this.getHeightHitbox();
+			double width = this.getWidthHitbox();
+
+			boolean xCond1 = x + width >= carX;
+			boolean xCond2 = x + width <= carX + carWidth;
+			boolean xCond3 = x >= carX;
+			boolean xCond4 = x <= carX + carWidth;
+			
+			boolean collidedX = (xCond1 && xCond2) || (xCond3 && xCond4);
+			
+			boolean yCond1 = y + height >= carY;
+			boolean yCond2 = y + height <= carY + carHeight;
+			boolean yCond3 = y >= carY;
+			boolean yCond4 = y <= carY + carHeight;
 			boolean collidedY = (yCond1 && yCond2) || (yCond3 && yCond4);
 
 			return collidedX && collidedY;

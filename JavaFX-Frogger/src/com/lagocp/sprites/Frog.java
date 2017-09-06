@@ -5,6 +5,9 @@ import com.lagocp.gameEngine.sprite.Sprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 /**
  * This class represents a Frog in Frogger. A frog will have an image, and can
@@ -17,29 +20,32 @@ public class Frog extends Sprite {
 	private static final double UNIT = 36;
 	public static final double DIM_WIDTH = 60;
 	public static final double DIM_HEIGHT = 54;
+	
+	private static final double RENDER_WIDTH = 40;
+	private static final double RENDER_HEIGHT = 55;
 
 	private double xHitbox;
 	private double yHitbox;
 	private double widthHitbox;
 	private double heightHitbox;
-	
+
 	private static final double XHITBOX_OFFSET = 10;
 	private static final double YHITBOX_OFFSET = 5;
 	private static final double WIDTH_HITBOX_OFFSET = 20;
-	private static final double HEIGHT_HITBOX_OFFSET = 5;
+	private static final double HEIGHT_HITBOX_OFFSET = 15;
 
 	public Frog(String imageFile, double x, double y, double width, double height, GraphicsContext gc) {
 		super(imageFile, x, y, width, height, gc);
 
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
-		setImage(scaled);
 
 		setWidth(scaled.getWidth());
 		setHalfWidth(getWidth() / 2);
 		setHeight(scaled.getHeight());
 		setHalfHeight(getHeight() / 2);
 
-		createHitbox(getX() + XHITBOX_OFFSET, getY() + YHITBOX_OFFSET, getWidth() - WIDTH_HITBOX_OFFSET, getHeight() - HEIGHT_HITBOX_OFFSET);
+		createHitbox(getX() + XHITBOX_OFFSET, getY() + YHITBOX_OFFSET, getWidth() - WIDTH_HITBOX_OFFSET,
+				getHeight() - HEIGHT_HITBOX_OFFSET);
 	}
 
 	/**
@@ -96,7 +102,7 @@ public class Frog extends Sprite {
 
 	@Override
 	public void render(GraphicsContext gc) {
-		gc.drawImage(getImage(), getX(), getY());
+		gc.drawImage(getImage(), getX(), getY(), RENDER_WIDTH, RENDER_HEIGHT);
 		// Also going to draw lines that coincide with boundaries
 		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
 		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
@@ -113,11 +119,11 @@ public class Frog extends Sprite {
 
 		this.setCenterX(this.getX() + this.getHalfWidth());
 		this.setCenterY(this.getY() + this.getHalfHeight());
-		
+
 		setXHitbox(getX() + XHITBOX_OFFSET);
 		setYHitbox(getY() + YHITBOX_OFFSET);
 	}
-	
+
 	/**
 	 * Moves the frog one unit upwards.
 	 */
@@ -169,7 +175,7 @@ public class Frog extends Sprite {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	public void setXHitbox(double x) {
 		xHitbox = x;
 	}
