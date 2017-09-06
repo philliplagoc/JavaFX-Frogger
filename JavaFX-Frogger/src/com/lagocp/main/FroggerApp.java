@@ -148,7 +148,7 @@ public class FroggerApp extends Application {
 		tracks = new Track[ySpawns.length];
 
 		// Start spawning cars
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < 3; i++) {
 			Random r = new Random();
 
 			// Get a random xSpawn and ySpawn
