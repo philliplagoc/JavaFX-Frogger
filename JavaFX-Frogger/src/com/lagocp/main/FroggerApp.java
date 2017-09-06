@@ -27,8 +27,8 @@ import javafx.stage.Stage;
  *
  */
 public class FroggerApp extends Application {
-	private static final double CANVAS_WIDTH = 600;
-	private static final double CANVAS_HEIGHT = 720;
+	public static final double CANVAS_WIDTH = 600;
+	public static final double CANVAS_HEIGHT = 720;
 
 	private Frog frog;
 	private static final String FROG_FILE_NAME = "/com/lagocp/assets/frog.png";
