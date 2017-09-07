@@ -19,6 +19,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -30,6 +33,8 @@ import javafx.stage.Stage;
 public class FroggerApp extends Application {
 	public static final double CANVAS_WIDTH = 600;
 	public static final double CANVAS_HEIGHT = 720;
+	private Canvas canvas;
+	private GraphicsContext gc;
 
 	private Frog frog;
 	private static final String FROG_FILE_NAME = "/com/lagocp/assets/frog.png";
@@ -53,12 +58,17 @@ public class FroggerApp extends Application {
 	private FroggerUI froggerUI;
 
 	private int level = 0;
-	private static final double LEVEL_EDGE = 30; // Min y coordinate where cars cannot spawn
+	private static final double LEVEL_EDGE = 60; // Min y coordinate where cars cannot spawn
 	private static final double SAFEZONE = 630; // Max y coordinate where cars cannot spawn
 
 	// private ArrayList<Track> tracks = new ArrayList<Track>();
 	private Track[] tracks;
 	private int limit = 4;
+
+	private boolean isGameOver = false;
+
+	private KeyPressHandler keyPressHandler = new KeyPressHandler();
+	private KeyReleasedHandler keyReleasedHandler = new KeyReleasedHandler();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -66,18 +76,18 @@ public class FroggerApp extends Application {
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 
-		Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+		canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+		gc = canvas.getGraphicsContext2D();
 
 		// Set-up UI
 		froggerUI = new FroggerUI(canvas);
-		froggerUI.initStats();
-		froggerUI.create();
+		// froggerUI.initStats();
+		// froggerUI.create();
 		froggerUI.placeCanvas(root);
 
 		canvas.setFocusTraversable(true);
-		canvas.setOnKeyPressed(new KeyPressHandler());
-		canvas.setOnKeyReleased(new KeyReleasedHandler());
+		canvas.setOnKeyPressed(keyPressHandler);
+		canvas.setOnKeyReleased(keyReleasedHandler);
 
 		spawn(gc);
 
@@ -85,7 +95,12 @@ public class FroggerApp extends Application {
 
 			@Override
 			public void handle(long now) {
-				froggerUI.updateUI(frog, cars.get(0));
+				// froggerUI.updateUI(frog, cars.get(0));
+				// while (!isGameOver) {
+				if (frog.didCollideWithTopWall(canvas)) {
+					// System.out.println("Hit top!");
+					froggerUI.increaseLevel();
+				}
 
 				frog.update(ELAPSED_TIME_SPEED);
 
@@ -98,9 +113,11 @@ public class FroggerApp extends Application {
 						car.setX(0 - car.getWidth());
 					}
 
-					if (car.didCollideWith(frog) || frog.didCollideWith(car))
-						System.out.println("Frog was hit!");
-					
+					if ((car.didCollideWith(frog) || frog.didCollideWith(car)) && !isGameOver) {
+						froggerUI.createGameOver();
+						isGameOver = true;
+					}
+
 					car.update(ELAPSED_TIME_SPEED);
 				}
 
@@ -117,6 +134,7 @@ public class FroggerApp extends Application {
 				for (int i = 0; i < cars.size(); i++) {
 					cars.get(i).render(gc);
 				}
+				// }
 
 			}
 
@@ -148,7 +166,7 @@ public class FroggerApp extends Application {
 		tracks = new Track[ySpawns.length];
 
 		// Start spawning cars
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 10; i++) {
 			Random r = new Random();
 
 			// Get a random xSpawn and ySpawn
@@ -177,7 +195,7 @@ public class FroggerApp extends Application {
 				}
 
 				// Reposition car if in same spawn as trackCar
-				if(car.didCollideWith(trackCar)) {
+				if (car.didCollideWith(trackCar)) {
 					car.setX(trackCar.getX() + CAR_DIM_WIDTH);
 				}
 
@@ -275,31 +293,49 @@ public class FroggerApp extends Application {
 
 		@Override
 		public void handle(KeyEvent event) {
-			switch (event.getCode()) {
-			case W:
-				if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
-					frog.moveUp();
-					pressedKeys.add(event.getCode().toString());
+			if (!isGameOver) {
+				switch (event.getCode()) {
+				case W:
+					if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
+						frog.moveUp();
+						pressedKeys.add(event.getCode().toString());
+					}
+					break;
+				case A:
+					if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
+						frog.moveLeft();
+						pressedKeys.add(event.getCode().toString());
+					}
+					break;
+				case S:
+					if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
+						frog.moveDown();
+						pressedKeys.add(event.getCode().toString());
+					}
+					break;
+				case D:
+					if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
+						frog.moveRight();
+						pressedKeys.add(event.getCode().toString());
+					}
+					break;
 				}
-				break;
-			case A:
-				if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
-					frog.moveLeft();
-					pressedKeys.add(event.getCode().toString());
+			} else { // Restarting the level
+				switch(event.getCode()) {
+				case SPACE:
+					gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+					
+					tracks = null;
+					cars = new ArrayList<Car>();
+					frog = null;
+					
+					froggerUI.removeGameOver();
+					
+					spawn(gc);
+
+					isGameOver = false;
+					break;
 				}
-				break;
-			case S:
-				if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
-					frog.moveDown();
-					pressedKeys.add(event.getCode().toString());
-				}
-				break;
-			case D:
-				if (!pressedKeys.contains(event.getCode().toString()) && pressedKeys.size() == 0) {
-					frog.moveRight();
-					pressedKeys.add(event.getCode().toString());
-				}
-				break;
 			}
 		}
 

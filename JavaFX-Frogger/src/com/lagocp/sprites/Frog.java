@@ -2,12 +2,10 @@ package com.lagocp.sprites;
 
 import com.lagocp.gameEngine.sprite.Sprite;
 
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 /**
  * This class represents a Frog in Frogger. A frog will have an image, and can
@@ -123,7 +121,7 @@ public class Frog extends Sprite {
 		setXHitbox(getX() + XHITBOX_OFFSET);
 		setYHitbox(getY() + YHITBOX_OFFSET);
 	}
-
+	
 	/**
 	 * Moves the frog one unit upwards.
 	 */
@@ -154,8 +152,9 @@ public class Frog extends Sprite {
 
 	@Override
 	public boolean didCollideWithTopWall(Canvas canvas) {
-		// TODO Auto-generated method stub
-		return false;
+		Bounds bounds = canvas.getBoundsInLocal();
+		
+		return getYHitbox() <= bounds.getMinY();
 	}
 
 	@Override
