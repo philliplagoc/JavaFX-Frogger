@@ -2,12 +2,10 @@ package com.lagocp.sprites;
 
 import com.lagocp.gameEngine.sprite.Sprite;
 
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 /**
  * This class represents a Frog in Frogger. A frog will have an image, and can
@@ -17,7 +15,7 @@ import javafx.scene.image.WritableImage;
  *
  */
 public class Frog extends Sprite {
-	private static final double UNIT = 36;
+	private static final double UNIT = 30;
 	public static final double DIM_WIDTH = 60;
 	public static final double DIM_HEIGHT = 54;
 	
@@ -104,12 +102,12 @@ public class Frog extends Sprite {
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY(), RENDER_WIDTH, RENDER_HEIGHT);
 		// Also going to draw lines that coincide with boundaries
-		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
-		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
-				getYHitbox() + getHeightHitbox()); // Bot
-		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
-		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
-				getYHitbox() + getHeightHitbox()); // Right
+//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
+//		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
+//				getYHitbox() + getHeightHitbox()); // Bot
+//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
+//		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
+//				getYHitbox() + getHeightHitbox()); // Right
 	}
 
 	@Override
@@ -123,7 +121,7 @@ public class Frog extends Sprite {
 		setXHitbox(getX() + XHITBOX_OFFSET);
 		setYHitbox(getY() + YHITBOX_OFFSET);
 	}
-
+	
 	/**
 	 * Moves the frog one unit upwards.
 	 */
@@ -154,8 +152,9 @@ public class Frog extends Sprite {
 
 	@Override
 	public boolean didCollideWithTopWall(Canvas canvas) {
-		// TODO Auto-generated method stub
-		return false;
+		Bounds bounds = canvas.getBoundsInLocal();
+		
+		return getYHitbox() <= bounds.getMinY();
 	}
 
 	@Override

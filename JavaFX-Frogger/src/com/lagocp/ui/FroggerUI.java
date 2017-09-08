@@ -12,6 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * This class derives from the UI and will provide the basic UI elements for
@@ -28,29 +32,51 @@ public class FroggerUI extends UI {
 	private Label froggerStats;
 	private Label carStats;
 
-	private HBox levelPane;
+	// private HBox levelPane;
 
-	private static final double HBOX_SPACING = 10;
+	// private static final double HBOX_SPACING = 10;
+
+	private BorderPane uiPane;
+
+	private int level;
+	private Label levelLabel;
+
+	private StackPane gameOverPane;
 
 	public FroggerUI(Canvas canvas) {
 		super(canvas);
 		base = new StackPane();
 
-		levelPane = new HBox(HBOX_SPACING);
+		// levelPane = new HBox(HBOX_SPACING);
+		uiPane = new BorderPane(canvas);
+		uiPane.setId("uiPane");
+		
+		level = 1;
+		levelLabel = new Label("LEVEL: " + level);
+		levelLabel.setId("levelLabel");
+
+		gameOverPane = new StackPane();
+		gameOverPane.setStyle("-fx-background-color: transparent;");
+		// gameOverPane.getChildren().add(new Label("Game Over!"));
 	}
 
 	@Override
 	public void create() {
 		// Set alignment
-		StackPane.setAlignment(stats, Pos.BOTTOM_CENTER);
-		StackPane.setAlignment(levelPane, Pos.TOP_CENTER);
+		// StackPane.setAlignment(levelPane, Pos.BOTTOM_CENTER);
 	}
 
 	@Override
 	public void placeCanvas(Group root) {
-		StackPane.setAlignment(getCanvas(), Pos.CENTER);
+		// StackPane.setAlignment(levelPane, Pos.BOTTOM_CENTER);
+		// levelPane.getChildren().add(new Label("levelPane"));
 
-		base.getChildren().addAll(stats, levelPane, getCanvas());
+		BorderPane.setAlignment(levelLabel, Pos.CENTER);
+		uiPane.setTop(levelLabel);
+
+		StackPane.setAlignment(getCanvas(), Pos.CENTER);
+		StackPane.setAlignment(gameOverPane, Pos.CENTER);
+		base.getChildren().addAll(uiPane, getCanvas(), gameOverPane);
 
 		root.getChildren().add(base);
 	}
@@ -88,5 +114,37 @@ public class FroggerUI extends UI {
 		statsPane.getChildren().addAll(froggerStats, carStats);
 		stats.setTop(statsPane);
 	}
+
+	/**
+	 * Increases the level in the UI.
+	 */
+	public void increaseLevel() {
+		level++;
+		levelLabel.setText("LEVEL: " + level);
+	}
+
+	/**
+	 * Creates the game over screen.
+	 */
+	public void createGameOver() {
+		Text gameOverText = new Text("GAME OVER!\nPress SPACE to restart...");
+		gameOverText.setTextAlignment(TextAlignment.CENTER);
+		StackPane.setAlignment(gameOverText, Pos.CENTER);
+		gameOverPane.getChildren().add(gameOverText);
+		gameOverText.setFont(Font.font("Impact", FontWeight.BOLD, 60));
+		// Make gameOverPane and base transparent
+		gameOverPane.setStyle("-fx-background-color: rgba(255, 102, 129, 0.73);");
+		base.setStyle("-fx-background-color: rgba(255, 102, 129, 0.73);");
+	}
+	
+	/**
+	 * Removes the game over screen.
+	 */
+	public void removeGameOver() {
+		gameOverPane.getChildren().remove(0);
+		gameOverPane.setStyle("-fx-background-color: transparent;");
+		base.setStyle("-fx-background-color: transparent;");
+	}
+	
 
 }
