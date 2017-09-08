@@ -74,7 +74,6 @@ public class FroggerApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Group root = new Group();
 		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
 
 		canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 		gc = canvas.getGraphicsContext2D();
@@ -85,6 +84,9 @@ public class FroggerApp extends Application {
 		// froggerUI.create();
 		froggerUI.placeCanvas(root);
 
+		scene.getStylesheets().add("/com/lagocp/assets/styles.css");
+		primaryStage.setScene(scene);
+		
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(keyPressHandler);
 		canvas.setOnKeyReleased(keyReleasedHandler);
@@ -321,16 +323,16 @@ public class FroggerApp extends Application {
 					break;
 				}
 			} else { // Restarting the level
-				switch(event.getCode()) {
+				switch (event.getCode()) {
 				case SPACE:
 					gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-					
+
 					tracks = null;
 					cars = new ArrayList<Car>();
 					frog = null;
-					
+
 					froggerUI.removeGameOver();
-					
+
 					spawn(gc);
 
 					isGameOver = false;

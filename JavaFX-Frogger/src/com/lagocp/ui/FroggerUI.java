@@ -49,8 +49,11 @@ public class FroggerUI extends UI {
 
 		// levelPane = new HBox(HBOX_SPACING);
 		uiPane = new BorderPane(canvas);
+		uiPane.setId("uiPane");
+		
 		level = 1;
 		levelLabel = new Label("LEVEL: " + level);
+		levelLabel.setId("levelLabel");
 
 		gameOverPane = new StackPane();
 		gameOverPane.setStyle("-fx-background-color: transparent;");
@@ -73,7 +76,7 @@ public class FroggerUI extends UI {
 
 		StackPane.setAlignment(getCanvas(), Pos.CENTER);
 		StackPane.setAlignment(gameOverPane, Pos.CENTER);
-		base.getChildren().addAll(getCanvas(), uiPane, gameOverPane);
+		base.getChildren().addAll(uiPane, getCanvas(), gameOverPane);
 
 		root.getChildren().add(base);
 	}
