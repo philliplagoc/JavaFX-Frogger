@@ -101,13 +101,6 @@ public class Frog extends Sprite {
 	@Override
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY(), RENDER_WIDTH, RENDER_HEIGHT);
-		// Also going to draw lines that coincide with boundaries
-//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
-//		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
-//				getYHitbox() + getHeightHitbox()); // Bot
-//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
-//		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
-//				getYHitbox() + getHeightHitbox()); // Right
 	}
 
 	@Override
@@ -159,20 +152,23 @@ public class Frog extends Sprite {
 
 	@Override
 	public boolean didCollideWithBotWall(Canvas canvas) {
-		// TODO Auto-generated method stub
-		return false;
+		Bounds bounds = canvas.getBoundsInLocal();
+		
+		return getYHitbox() + getHeightHitbox() >= bounds.getMaxY();
 	}
 
 	@Override
 	public boolean didCollideWithLeftWall(Canvas canvas) {
-		// TODO Auto-generated method stub
-		return false;
+		Bounds bounds = canvas.getBoundsInLocal();
+		
+		return getXHitbox() <= bounds.getMinX();
 	}
 
 	@Override
 	public boolean didCollideWithRightWall(Canvas canvas) {
-		// TODO Auto-generated method stub
-		return false;
+		Bounds bounds = canvas.getBoundsInLocal();
+		
+		return getXHitbox() + getWidthHitbox() >= bounds.getMaxX();
 	}
 
 	public void setXHitbox(double x) {

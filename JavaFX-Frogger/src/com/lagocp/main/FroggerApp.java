@@ -39,7 +39,7 @@ public class FroggerApp extends Application {
 	private Frog frog;
 	private static final String FROG_FILE_NAME = "/com/lagocp/assets/frog.png";
 	private static final double FROG_DIM_WIDTH = Frog.DIM_WIDTH;
-	private static final double FROG_DIM_HEIGHT = Frog.DIM_HEIGHT;
+	private static final double FROG_DIM_HEIGHT =Frog.DIM_HEIGHT;
 	private static final double FROG_SPAWN_X = CANVAS_WIDTH / 2 - (FROG_DIM_WIDTH / 2);
 	private static final double FROG_SPAWN_Y = CANVAS_HEIGHT - FROG_DIM_WIDTH;
 
@@ -57,7 +57,7 @@ public class FroggerApp extends Application {
 
 	private FroggerUI froggerUI;
 
-	private int level = 0;
+	private int numCars = 5;
 	private static final double LEVEL_EDGE = 60; // Min y coordinate where cars cannot spawn
 	private static final double SAFEZONE = 630; // Max y coordinate where cars cannot spawn
 
@@ -80,28 +80,42 @@ public class FroggerApp extends Application {
 
 		// Set-up UI
 		froggerUI = new FroggerUI(canvas);
-		// froggerUI.initStats();
-		// froggerUI.create();
 		froggerUI.placeCanvas(root);
 
 		scene.getStylesheets().add("/com/lagocp/assets/styles.css");
 		primaryStage.setScene(scene);
-		
+
 		canvas.setFocusTraversable(true);
 		canvas.setOnKeyPressed(keyPressHandler);
 		canvas.setOnKeyReleased(keyReleasedHandler);
 
-		spawn(gc);
+		spawn(gc, 5);
 
 		new AnimationTimer() {
 
 			@Override
 			public void handle(long now) {
-				// froggerUI.updateUI(frog, cars.get(0));
-				// while (!isGameOver) {
+				if(frog.didCollideWithBotWall(canvas)) 
+					frog.setY(CANVAS_HEIGHT - FROG_DIM_HEIGHT);
+				
+				if(frog.didCollideWithLeftWall(canvas))
+					frog.setX(0);
+				
+				if(frog.didCollideWithRightWall(canvas))
+					frog.setX(CANVAS_WIDTH - FROG_DIM_WIDTH); 
+				
 				if (frog.didCollideWithTopWall(canvas)) {
-					// System.out.println("Hit top!");
 					froggerUI.increaseLevel();
+
+					numCars += 2;
+
+					gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+					tracks = null;
+					cars = new ArrayList<Car>();
+					frog = null;
+
+					spawn(gc, numCars);
 				}
 
 				frog.update(ELAPSED_TIME_SPEED);
@@ -136,7 +150,6 @@ public class FroggerApp extends Application {
 				for (int i = 0; i < cars.size(); i++) {
 					cars.get(i).render(gc);
 				}
-				// }
 
 			}
 
@@ -155,7 +168,7 @@ public class FroggerApp extends Application {
 	 * @param gc
 	 *            The GraphicsContext to draw with.
 	 */
-	private void spawn(GraphicsContext gc) {
+	private void spawn(GraphicsContext gc, int numCars) {
 		// Spawning frog
 		frog = new Frog(FROG_FILE_NAME, FROG_SPAWN_X, FROG_SPAWN_Y, 0, 0, gc);
 
@@ -168,7 +181,7 @@ public class FroggerApp extends Application {
 		tracks = new Track[ySpawns.length];
 
 		// Start spawning cars
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < numCars; i++) {
 			Random r = new Random();
 
 			// Get a random xSpawn and ySpawn
@@ -333,14 +346,13 @@ public class FroggerApp extends Application {
 
 					froggerUI.removeGameOver();
 
-					spawn(gc);
+					spawn(gc, numCars);
 
 					isGameOver = false;
 					break;
 				}
 			}
 		}
-
 	}
 
 	/**

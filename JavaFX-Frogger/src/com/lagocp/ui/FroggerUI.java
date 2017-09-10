@@ -31,11 +31,7 @@ public class FroggerUI extends UI {
 	private HBox statsPane;
 	private Label froggerStats;
 	private Label carStats;
-
-	// private HBox levelPane;
-
-	// private static final double HBOX_SPACING = 10;
-
+	
 	private BorderPane uiPane;
 
 	private int level;
@@ -47,7 +43,6 @@ public class FroggerUI extends UI {
 		super(canvas);
 		base = new StackPane();
 
-		// levelPane = new HBox(HBOX_SPACING);
 		uiPane = new BorderPane(canvas);
 		uiPane.setId("uiPane");
 		
@@ -57,20 +52,14 @@ public class FroggerUI extends UI {
 
 		gameOverPane = new StackPane();
 		gameOverPane.setStyle("-fx-background-color: transparent;");
-		// gameOverPane.getChildren().add(new Label("Game Over!"));
 	}
 
 	@Override
 	public void create() {
-		// Set alignment
-		// StackPane.setAlignment(levelPane, Pos.BOTTOM_CENTER);
 	}
 
 	@Override
 	public void placeCanvas(Group root) {
-		// StackPane.setAlignment(levelPane, Pos.BOTTOM_CENTER);
-		// levelPane.getChildren().add(new Label("levelPane"));
-
 		BorderPane.setAlignment(levelLabel, Pos.CENTER);
 		uiPane.setTop(levelLabel);
 
@@ -132,6 +121,7 @@ public class FroggerUI extends UI {
 		StackPane.setAlignment(gameOverText, Pos.CENTER);
 		gameOverPane.getChildren().add(gameOverText);
 		gameOverText.setFont(Font.font("Impact", FontWeight.BOLD, 60));
+		
 		// Make gameOverPane and base transparent
 		gameOverPane.setStyle("-fx-background-color: rgba(255, 102, 129, 0.73);");
 		base.setStyle("-fx-background-color: rgba(255, 102, 129, 0.73);");
