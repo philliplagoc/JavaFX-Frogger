@@ -43,7 +43,6 @@ public class Car extends Sprite {
 		this.name = name;
 
 		Image scaled = this.scaleImage(getImage(), DIM_WIDTH, DIM_HEIGHT, true);
-		// setImage(scaled);
 
 		setWidth(scaled.getWidth());
 		setHalfWidth(getWidth() / 2);
@@ -151,13 +150,6 @@ public class Car extends Sprite {
 	@Override
 	public void render(GraphicsContext gc) {
 		gc.drawImage(getImage(), getX(), getY(), DIM_WIDTH, DIM_HEIGHT);
-		// Drawing boundaries
-//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(), getYHitbox()); // Top
-//		gc.strokeLine(getXHitbox(), getYHitbox() + getHeightHitbox(), getXHitbox() + getWidthHitbox(),
-//				getYHitbox() + getHeightHitbox()); // Bot
-//		gc.strokeLine(getXHitbox(), getYHitbox(), getXHitbox(), getYHitbox() + getHeightHitbox()); // Left
-//		gc.strokeLine(getXHitbox() + getWidthHitbox(), getYHitbox(), getXHitbox() + getWidthHitbox(),
-//				getYHitbox() + getHeightHitbox()); // Right
 	}
 
 	@Override
