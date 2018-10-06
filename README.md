@@ -20,3 +20,13 @@ To play...
 **D** - Moves the frog one unit right
 
 **SPACE BAR** - Restarts the game upon game over
+
+## Screenshots:
+<img src="/frogger1.png"
+     style="float: left; margin-right: 10px;" />
+
+<img src="frogger2.png"
+     style="float: left; margin-right: 10px;" />
+
+<img src="frogger3.png"
+     style="float: left; margin-right: 10px;" />
